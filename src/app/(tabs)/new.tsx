@@ -1,7 +1,7 @@
 import { Text } from "react-native"
 
-export default function Home() {
+export default function  CreatePost() {
     return(
-        <Text> Hello </Text>
+        <Text> Create Post </Text>
     )
 }

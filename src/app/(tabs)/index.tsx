@@ -1,7 +1,7 @@
 import { Text } from "react-native"
 
-export default function Home() {
+export default function FeedScreen() {
     return(
-        <Text> Hello </Text>
+        <Text> Feed </Text>
     )
 }
