@@ -1,6 +1,7 @@
 import { Text, View, Image, TextInput, Pressable } from "react-native"
 import { useEffect, useState } from "react"
 import * as ImagePicker from 'expo-image-picker';
+import Button from "~/src/components/Button";
 
 export default function  CreatePost() {
     const[caption, setCaption] = useState('');
@@ -21,8 +22,6 @@ export default function  CreatePost() {
         quality: 1,
         });
 
-        console.log(result);
-
         if (!result.canceled) {
         setImage(result.assets[0].uri);
         }
@@ -39,7 +38,7 @@ export default function  CreatePost() {
             ) : (
                 <View  className="w-52 aspect-[3/4] rounded-lg"/>
             )}
-            
+
             <Text onPress={pickImage}  className="text-blue-500 font-semibold m-5 bg-slate-300">
                 Change
             </Text>
@@ -54,11 +53,7 @@ export default function  CreatePost() {
 
             {/* Button */}
             <View className="mt-auto w-full">
-                <Pressable className="bg-blue-500 w-full p-3 items-center rounded-md">
-                    <Text className="text-white font-semibold">
-                        Share
-                    </Text>
-                </Pressable>
+                <Button title="Share" />
             </View>
         </View>
     )
