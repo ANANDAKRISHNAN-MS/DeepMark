@@ -26,13 +26,16 @@ export default function ProfileScreen() {
             {image ?(
                 <Image 
                     source={{ uri: image}}
-                    className="w-52 aspect-square rounded-full bg-slate-300"
+                    className="w-52 aspect-square self-center rounded-full bg-slate-300"
                 />
             ) : (
-                <View  className="w-52 aspect-square rounded-full"/>
+                <View  className="w-52 aspect-square self-center rounded-full  bg-slate-300" />
             )}
 
-            <Text onPress={pickImage}  className="text-blue-500 font-semibold m-5 bg-slate-300">
+            <Text 
+                onPress={pickImage} 
+                className="text-blue-500 font-semibold m-5 self-center bg-slate-300"
+            >
                 Change
             </Text>
             
