@@ -2,18 +2,25 @@ import { Text, View, Image, TextInput, Pressable } from "react-native"
 import { useEffect, useState } from "react"
 import * as ImagePicker from 'expo-image-picker';
 import Button from "~/src/components/Button";
+import { useVideoPlayer, VideoView } from "expo-video";
 
 export default function  CreatePost() {
     const[caption, setCaption] = useState('');
-    const [image, setImage] = useState<string | null>(null);
+    const [media, setMedia] = useState<string | null>(null);
+    const [mediaType, setMediaType] = useState<'image' | 'video' | null>(null);
 
     useEffect(()=>{
-        if(!image){
-            pickImage();
+        if(!media){
+            pickMedia();
         }
-    },[image]);
+    },[media]);
 
-    const pickImage = async () => {
+    const player = useVideoPlayer(media, player => {
+        player.loop = true;
+        player.play();
+      });
+
+    const pickMedia = async () => {
         // No permissions request is necessary for launching the image library
         let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ['images', 'videos'],
@@ -23,7 +30,12 @@ export default function  CreatePost() {
         });
 
         if (!result.canceled) {
-        setImage(result.assets[0].uri);
+            if(result.assets[0].type ==='image'){
+                setMediaType('image')
+            } else{
+                setMediaType('video')
+            }
+            setMedia(result.assets[0].uri)
         }
     };
 
@@ -35,16 +47,24 @@ export default function  CreatePost() {
     return(
         <View className="p-3 items-center flex-1">
             {/* Media Picker */}
-            {image ?(
+            { !media ?(
+                    <View  className="w-52 aspect-[3/4] rounded-lg bg-slate-300"/>
+            ) : mediaType === 'image' ? (
                 <Image 
-                    source={{ uri: image}}
-                    className="w-52 aspect-[3/4] rounded-lg bg-slate-300"
+                source={{ uri: media}}
+                className="w-52 aspect-[3/4] rounded-lg bg-slate-300"
                 />
             ) : (
-                <View  className="w-52 aspect-[3/4] rounded-lg bg-slate-300"/>
+                <VideoView 
+                className="w-52 aspect-[3/4] rounded-lg bg-slate-300"
+                style={{ width: 200, aspectRatio: 1}}
+                player={player} 
+                allowsFullscreen 
+                allowsPictureInPicture 
+                />
             )}
 
-            <Text onPress={pickImage}  className="text-blue-500 font-semibold m-5 bg-slate-300">
+            <Text onPress={pickMedia}  className="text-blue-500 font-semibold m-5 bg-slate-300">
                 Change
             </Text>
 

@@ -1,7 +1,7 @@
 import { Text, View, useWindowDimensions} from "react-native"
 import { AntDesign} from "@expo/vector-icons"
 
-import { AdvancedImage } from 'cloudinary-react-native';
+import { AdvancedImage, AdvancedVideo } from 'cloudinary-react-native';
 import { cld } from "~/src/lib/cloudinary";
 
 import { thumbnail } from "@cloudinary/url-gen/actions/resize";
@@ -11,10 +11,13 @@ import { FocusOn } from "@cloudinary/url-gen/qualifiers/focusOn";
 export default function PostListItem({ post } ) {
     const { width } = useWindowDimensions();
 
-    const image = cld.image(post.image)
+    const image = cld.image(post.media_url)
     image.resize(thumbnail().width(width).height(width));
-    
-    const avatar = cld.image(post.user.avatar_url)
+
+    const video = cld.video(post.media_url)
+
+
+    const avatar = cld.image(post.user_profile_picture)
     avatar.resize(thumbnail().width(48).height(48).gravity(focusOn(FocusOn.face())));
 
     return(
@@ -27,7 +30,16 @@ export default function PostListItem({ post } ) {
                 />
                 <Text className="font-semibold">{post.user.username}</Text>
             </View>
-            <AdvancedImage cldImg={post.image_url} className="w-full aspect-[4/3]"/>
+
+            { post.media_type === 'image' ? (
+                <AdvancedImage cldImg={image} className="w-full aspect-[4/3]"/>
+            ) : (
+                <AdvancedVideo 
+                cldVideo={video} 
+                videoStyle={{ width: '100%', aspectRatio: 4 / 3}}
+                />
+            )}
+
             <View className="flex-row gap-3 p-3">
                 <AntDesign name="hearto" size={25} />
             </View>
