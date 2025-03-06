@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react"
 import { FlatList } from "react-native"
 
-// import posts from "~/assets/data/posts.json"
 import PostListItem from "~/src/components/PostListItem"
-
 
 export default function FeedScreen() {
    const [posts, setPosts] = useState([]);
@@ -13,7 +11,7 @@ export default function FeedScreen() {
    }, [])
 
    const fetchPosts = async () => {
-        let data = /* data to be fetched */
+        let data = /* TODO fetch user profile */
         setPosts([])
    }
 

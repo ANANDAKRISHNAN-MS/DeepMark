@@ -1,11 +1,43 @@
-import { Text, View, Image, TextInput} from "react-native"
+import { Text, View, Image} from "react-native"
 import * as ImagePicker from 'expo-image-picker';
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { thumbnail } from "@cloudinary/url-gen/actions/resize";
+
 import Button from "~/src/components/Button";
+import { useAuth } from "~/src/providers/AuthProvider";
+import CustomTextComponent from "~/src/components/CustomTextComponent";
+import { cld } from "~/src/lib/cloudinary";
+import { AdvancedImage } from "cloudinary-react-native";
+
 
 export default function ProfileScreen() {
     const [image, setImage] = useState<string | null>(null);
-    const [username,setUsername] = useState('');
+    const [remoteImage, setRemoteImage] = useState<string | null>(null);
+    const [name, setName] = useState('');
+    const [bio, setBio] = useState(' ');
+
+    const { token, username } = useAuth();
+
+
+    useEffect(() => {
+         getProfile()
+    },[])
+
+    const getProfile = async () => {
+        if(!username){
+            return;
+        }
+
+        /* TODO fetch user profile */
+    }
+
+    const updateProfile = async () => {
+         /* TODO update user profile */
+        //  if(image){
+
+        //  }
+    }
+
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -19,7 +51,12 @@ export default function ProfileScreen() {
         setImage(result.assets[0].uri);
         }
     };
-
+    
+    let remoteCldImage
+    if (remoteImage){
+        remoteCldImage = cld.image(remoteImage)
+        remoteCldImage.resize(thumbnail().width(300).height(300))
+    }
     return(
         <View className="p-3 flex-1">
             {/* Avatar Picker */}
@@ -28,6 +65,8 @@ export default function ProfileScreen() {
                     source={{ uri: image}}
                     className="w-52 aspect-square self-center rounded-full bg-slate-300"
                 />
+            ) : remoteCldImage ? (
+                    <AdvancedImage cldImg={remoteCldImage} />
             ) : (
                 <View  className="w-52 aspect-square self-center rounded-full  bg-slate-300" />
             )}
@@ -38,16 +77,24 @@ export default function ProfileScreen() {
             >
                 Change
             </Text>
-            
-            <Text className="mb-2 text-gray-500 font-semibold">Username</Text>
-            <TextInput 
-                placeholder="username"
-                value={username}
-                onChangeText={setUsername}
-                className="border border-gray-300 p-3 rounded-md"
-            />
+            <View className="gap-5">
+                <CustomTextComponent 
+                    label="Name"
+                    placeholder="username"
+                    value={name}
+                    onChangeText={setName} 
+                /> 
+                <CustomTextComponent 
+                    label="Bio"
+                    placeholder="username"
+                    value={bio}
+                    onChangeText={setBio}
+                    multiline
+                    numberOfLines={3} 
+                />
+            </View>
             <View className="gap-2 mt-auto">
-                <Button title="Update"/>
+                <Button onPress = {updateProfile} title="Update"/>
                 <Button title="Sign Out"/>
             </View>
         

@@ -1,4 +1,4 @@
-import { Text, View, Image, useWindowDimensions} from "react-native"
+import { Text, View, useWindowDimensions} from "react-native"
 import { AntDesign} from "@expo/vector-icons"
 
 import { AdvancedImage } from 'cloudinary-react-native';
@@ -22,12 +22,12 @@ export default function PostListItem({ post } ) {
             {/* Header*/}
             <View className="p-3 flex-row items-center gap-2">
                 <AdvancedImage
-                  cldImg={avatar}
+                  cldImg={post.user.avatar_url}
                   className="w-12 aspect-square rounded-full" 
                 />
                 <Text className="font-semibold">{post.user.username}</Text>
             </View>
-            <AdvancedImage cldImg={image} className="w-full aspect-[4/3]"/>
+            <AdvancedImage cldImg={post.image_url} className="w-full aspect-[4/3]"/>
             <View className="flex-row gap-3 p-3">
                 <AntDesign name="hearto" size={25} />
             </View>

@@ -27,6 +27,11 @@ export default function  CreatePost() {
         }
     };
 
+    const uploadPost = async () => {
+         /* TODO upload user post*/
+
+    }
+
     return(
         <View className="p-3 items-center flex-1">
             {/* Media Picker */}
@@ -53,7 +58,7 @@ export default function  CreatePost() {
 
             {/* Button */}
             <View className="mt-auto w-full">
-                <Button title="Share" />
+                <Button onPress={uploadPost} title="Share" />
             </View>
         </View>
     )
