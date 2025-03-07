@@ -1,21 +1,43 @@
-import { Text, View, useWindowDimensions} from "react-native"
+import { useEffect, useState } from "react";
+import { Text, View} from "react-native"
 import { AntDesign} from "@expo/vector-icons"
 
-import { AdvancedImage, AdvancedVideo } from 'cloudinary-react-native';
-import { cld } from "~/src/lib/cloudinary";
-
+import { AdvancedImage } from 'cloudinary-react-native';
 import { thumbnail } from "@cloudinary/url-gen/actions/resize";
 import { focusOn } from "@cloudinary/url-gen/qualifiers/gravity";
 import { FocusOn } from "@cloudinary/url-gen/qualifiers/focusOn";
 
+import { cld } from "~/src/lib/cloudinary";
+import PostContent from "~/src/components/PostContent";
+
+
 export default function PostListItem({ post } ) {
-    const { width } = useWindowDimensions();
+    const [isLiked, setIsLiked] = useState(false);
+    const [likedRecord, setLikedRecord] = useState(null);
 
-    const image = cld.image(post.media_url)
-    image.resize(thumbnail().width(width).height(width));
+    useEffect(() => {
+        fetchLike();
+    },[]);
 
-    const video = cld.video(post.media_url)
+    useEffect(()=>{
+        if(isLiked){
+            saveLike()
+        } else{
+            deleteLike() 
+        }
+    },[isLiked])
 
+    const saveLike = async () => {
+        /*TODO like api */
+    }
+
+    const fetchLike = async () => {
+        /*TODO user like api */
+    }
+
+    const deleteLike = async () => {
+        /*TODO unlike api */
+    }
 
     const avatar = cld.image(post.user_profile_picture)
     avatar.resize(thumbnail().width(48).height(48).gravity(focusOn(FocusOn.face())));
@@ -31,17 +53,15 @@ export default function PostListItem({ post } ) {
                 <Text className="font-semibold">{post.user.username}</Text>
             </View>
 
-            { post.media_type === 'image' ? (
-                <AdvancedImage cldImg={image} className="w-full aspect-[4/3]"/>
-            ) : (
-                <AdvancedVideo 
-                cldVideo={video} 
-                videoStyle={{ width: '100%', aspectRatio: 4 / 3}}
-                />
-            )}
+            <PostContent post={post} />
 
             <View className="flex-row gap-3 p-3">
-                <AntDesign name="hearto" size={25} />
+                <AntDesign 
+                onPress={() => {setIsLiked(!isLiked)}}
+                name={ isLiked ? "heart" : "hearto"} 
+                color={isLiked ? 'crimson' : 'black'}
+                size={25} 
+                />
             </View>
         </View>
         

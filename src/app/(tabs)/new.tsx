@@ -1,8 +1,9 @@
 import { Text, View, Image, TextInput, Pressable } from "react-native"
 import { useEffect, useState } from "react"
 import * as ImagePicker from 'expo-image-picker';
-import Button from "~/src/components/Button";
 import { useVideoPlayer, VideoView } from "expo-video";
+
+import Button from "~/src/components/Button";
 
 export default function  CreatePost() {
     const[caption, setCaption] = useState('');

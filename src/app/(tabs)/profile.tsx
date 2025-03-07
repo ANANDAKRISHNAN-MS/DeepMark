@@ -2,12 +2,12 @@ import { Text, View, Image} from "react-native"
 import * as ImagePicker from 'expo-image-picker';
 import { useEffect, useState } from "react";
 import { thumbnail } from "@cloudinary/url-gen/actions/resize";
+import { AdvancedImage } from "cloudinary-react-native";
 
 import Button from "~/src/components/Button";
 import { useAuth } from "~/src/providers/AuthProvider";
 import CustomTextComponent from "~/src/components/CustomTextComponent";
 import { cld } from "~/src/lib/cloudinary";
-import { AdvancedImage } from "cloudinary-react-native";
 
 
 export default function ProfileScreen() {
