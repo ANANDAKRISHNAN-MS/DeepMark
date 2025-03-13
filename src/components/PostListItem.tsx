@@ -16,8 +16,10 @@ export default function PostListItem({ post } ) {
     const [likedRecord, setLikedRecord] = useState(null);
 
     useEffect(() => {
-        fetchLike();
-    },[]);
+        if(post.isLiked){
+            setIsLiked(true);
+        }
+    },[post.isLiked]);
 
     useEffect(()=>{
         if(isLiked){
@@ -29,10 +31,6 @@ export default function PostListItem({ post } ) {
 
     const saveLike = async () => {
         /*TODO like api */
-    }
-
-    const fetchLike = async () => {
-        /*TODO user like api */
     }
 
     const deleteLike = async () => {
@@ -47,10 +45,10 @@ export default function PostListItem({ post } ) {
             {/* Header*/}
             <View className="p-3 flex-row items-center gap-2">
                 <AdvancedImage
-                  cldImg={post.user.avatar_url}
+                  cldImg={post.user_profile_picture}
                   className="w-12 aspect-square rounded-full" 
                 />
-                <Text className="font-semibold">{post.user.username}</Text>
+                <Text className="font-semibold">{post.username}</Text>
             </View>
 
             <PostContent post={post} />
@@ -62,6 +60,14 @@ export default function PostListItem({ post } ) {
                 color={isLiked ? 'crimson' : 'black'}
                 size={25} 
                 />
+            </View>
+            <View className="px-3 g-2">
+                <Text className="font-semibold"> {post.likes_count} likes</Text>
+                <Text>
+                    <Text className="font-semibold">{post.username}</Text>
+                    {post.caption}
+                </Text>
+
             </View>
         </View>
         

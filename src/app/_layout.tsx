@@ -4,8 +4,10 @@ import "~/global.css"
 import AuthProvider from "~/src/providers/AuthProvider";
 
 export default function RootLayout(){
-    <AuthProvider>
-          return < Stack screenOptions={{headerShown: false}}/> 
-    </AuthProvider>
+   return(
+        <AuthProvider>
+            < Stack screenOptions={{headerShown: false}}/> 
+        </AuthProvider>
+   )
 
 }

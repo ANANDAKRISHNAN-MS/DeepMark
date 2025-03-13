@@ -1,10 +1,5 @@
-import { View } from "react-native";
+import { Redirect } from "expo-router";
 
- /* TODO add login and register pages */
- export default function Auth(){
-    return(
-        <View>
-            
-        </View>
-    )
+export default function Auth(){
+    return <Redirect href="/(auth)/login" />;
  }

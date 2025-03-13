@@ -2,9 +2,11 @@ import { useEffect, useState } from "react"
 import { FlatList } from "react-native"
 
 import PostListItem from "~/src/components/PostListItem"
+import { useAuth } from "~/src/providers/AuthProvider";
 
 export default function FeedScreen() {
    const [posts, setPosts] = useState([]);
+   const {token, username} = useAuth()
 
    useEffect(() => {
         fetchPosts();
