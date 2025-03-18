@@ -21,25 +21,43 @@ export default function Login() {
           username: username,
           password: password,
         }).toString();
+
         const response = await fetch(`${process.env.EXPO_PUBLIC_BASE_URL}/auth/token`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
-          body: formBody,
+          body:formBody
         });
     
         const data = await response.json();
-    
         if (!response.ok) {
           Alert.alert("Login Failed", data.detail || "Incorrect credentials");
           return;
         }
     
-        Alert.alert("Login Successful!", `Welcome ${data.username}`);
-        await login(data.access_token, data.username)
+        Alert.alert(
+          "Login Successfull",
+          `Welcome to DeepMark ${data.username}`,
+          [
+              {
+                  text: "Cancel",
+                  style: "cancel",
+                  onPress: () =>{
+                    setPassword('')
+                    setUsername('')
+                  }
+              },
+              {
+                  text: "OK",
+                  onPress: async () => {
+                    await login(data.access_token, data.username)
+                    router.replace("/(tabs)");
+                  }
+              }
+          ]
+      );
         
-        router.replace("/(tabs)");
     
       } catch (error) {
         console.error("Login error:", error);
@@ -69,24 +87,26 @@ export default function Login() {
             </View>
 
             <View className="flex items-center mx-4 space-y-4">
-                <Animated.View entering={FadeInDown.duration(1000).springify()} className="bg-black/5 p-5 rounded-2xl w-full">
+                <Animated.View entering={FadeInDown.duration(1000).springify()} className="bg-slate-500/20 p-4 rounded-2xl w-full m-2">
 
                 <TextInput 
                 placeholder='Username' 
                 placeholderTextColor="#d1d5db"
                 autoCapitalize="none"
                 autoCorrect={false}
+                value={username}
                 style={{ color: 'white' }}
                 onChangeText={(newValue) => setUsername(newValue)}
                 />
                 </Animated.View>
-                <Animated.View entering={FadeInDown.delay(200).duration(1000).springify()} className="bg-black/5 p-5 rounded-2xl w-full mb-3">
+                <Animated.View entering={FadeInDown.delay(200).duration(1000).springify()} className="bg-slate-500/20 p-4 rounded-2xl w-full mb-3 m-2">
 
                 <TextInput
                 placeholder='Password'
                 placeholderTextColor="#d1d5db"
                 onChangeText={(newValue) => setPassword(newValue)}
                 style={{ color: 'white' }} 
+                value={password}
                 secureTextEntry
                 autoCapitalize="none"
                 autoCorrect={false}
@@ -94,7 +114,7 @@ export default function Login() {
 
                 </Animated.View>
                 <Animated.View entering={FadeInDown.delay(400).duration(1000).springify()} className="w-full">
-                    <TouchableOpacity className="w-full bg-sky-400 p-3 rounded-2xl mb-3">
+                    <TouchableOpacity className="w-full bg-sky-400 p-3 rounded-2xl mb-3 mt-2">
                         <Text 
                         className="text-xl font-bold text-white text-center"
                         onPress={() => validate()}

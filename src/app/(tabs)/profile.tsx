@@ -8,6 +8,7 @@ import Button from "~/src/components/Button";
 import { useAuth } from "~/src/providers/AuthProvider";
 import CustomTextComponent from "~/src/components/CustomTextComponent";
 import { cld } from "~/src/lib/cloudinary";
+import { router } from "expo-router";
 
 
 export default function ProfileScreen() {
@@ -16,7 +17,7 @@ export default function ProfileScreen() {
     const [name, setName] = useState('');
     const [bio, setBio] = useState(' ');
 
-    const { token, username } = useAuth();
+    const { token, username, logout } = useAuth();
 
 
     useEffect(() => {
@@ -38,6 +39,10 @@ export default function ProfileScreen() {
         //  }
     }
 
+    const signout = async () =>{
+        await logout()
+        router.replace("/(auth)")
+    }
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -95,7 +100,7 @@ export default function ProfileScreen() {
             </View>
             <View className="gap-2 mt-auto">
                 <Button onPress = {updateProfile} title="Update"/>
-                <Button title="Sign Out"/>
+                <Button onPress = {signout} title="Sign Out"/>
             </View>
         
         </View>
