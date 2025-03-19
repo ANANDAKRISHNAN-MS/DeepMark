@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, FlatList } from 'react-native';
+import { FlatList } from 'react-native';
 import ActivityListItem from '~/src/components/ActivityListItem';
 
 const DUMMY_POST_IMAGE = 'https://via.placeholder.com/50';

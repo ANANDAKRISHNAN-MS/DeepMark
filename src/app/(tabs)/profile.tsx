@@ -1,108 +1,46 @@
-import { Text, View, Image} from "react-native"
-import * as ImagePicker from 'expo-image-picker';
-import { useEffect, useState } from "react";
-import { thumbnail } from "@cloudinary/url-gen/actions/resize";
-import { AdvancedImage } from "cloudinary-react-native";
-
-import Button from "~/src/components/Button";
-import { useAuth } from "~/src/providers/AuthProvider";
-import CustomTextComponent from "~/src/components/CustomTextComponent";
-import { cld } from "~/src/lib/cloudinary";
+import { Text, View, TouchableOpacity, Alert} from "react-native"
 import { router } from "expo-router";
+
+import { useAuth } from "~/src/providers/AuthProvider";
+import ProfileHeader from "~/src/components/ProfileHeader";
+import ProfilePostGrid from "~/src/components/ProfilePostGrid";
 
 
 export default function ProfileScreen() {
-    const [image, setImage] = useState<string | null>(null);
-    const [remoteImage, setRemoteImage] = useState<string | null>(null);
-    const [name, setName] = useState('');
-    const [bio, setBio] = useState(' ');
-
-    const { token, username, logout } = useAuth();
-
-
-    useEffect(() => {
-         getProfile()
-    },[])
-
-    const getProfile = async () => {
-        if(!username){
-            return;
-        }
-
-        /* TODO fetch user profile */
-    }
-
-    const updateProfile = async () => {
-         /* TODO update user profile */
-        //  if(image){
-
-        //  }
-    }
+    const { username, logout } = useAuth();
 
     const signout = async () =>{
-        await logout()
-        router.replace("/(auth)")
-    }
-    const pickImage = async () => {
-        // No permissions request is necessary for launching the image library
-        let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ['images', 'videos'],
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 1,
-        });
-
-        if (!result.canceled) {
-        setImage(result.assets[0].uri);
-        }
-    };
-    
-    let remoteCldImage
-    if (remoteImage){
-        remoteCldImage = cld.image(remoteImage)
-        remoteCldImage.resize(thumbnail().width(300).height(300))
+        Alert.alert(
+            "Logout",
+            "Do you want to Logout!!",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel",
+                    onPress: () =>{
+                    }
+                },
+                {
+                    text: "OK",
+                    onPress: async () => {
+                        await logout()
+                        router.replace("/(auth)")
+                    }
+                }
+            ]
+        )
     }
     return(
-        <View className="p-3 flex-1">
-            {/* Avatar Picker */}
-            {image ?(
-                <Image 
-                    source={{ uri: image}}
-                    className="w-52 aspect-square self-center rounded-full bg-slate-300"
-                />
-            ) : remoteCldImage ? (
-                    <AdvancedImage cldImg={remoteCldImage} />
-            ) : (
-                <View  className="w-52 aspect-square self-center rounded-full  bg-slate-300" />
-            )}
-
-            <Text 
-                onPress={pickImage} 
-                className="text-blue-500 font-semibold m-5 self-center bg-slate-300"
+        <View className="flex-1 bg-white">
+            <TouchableOpacity
+            className="absolute top-[60px] right-5 bg-red-600 py-1.5 px-3 rounded-md z-10"
+            onPress={signout}
             >
-                Change
-            </Text>
-            <View className="gap-5">
-                <CustomTextComponent 
-                    label="Name"
-                    placeholder="username"
-                    value={name}
-                    onChangeText={setName} 
-                /> 
-                <CustomTextComponent 
-                    label="Bio"
-                    placeholder="username"
-                    value={bio}
-                    onChangeText={setBio}
-                    multiline
-                    numberOfLines={3} 
-                />
-            </View>
-            <View className="gap-2 mt-auto">
-                <Button onPress = {updateProfile} title="Update"/>
-                <Button onPress = {signout} title="Sign Out"/>
-            </View>
-        
+            <Text className="text-white font-bold">Logout</Text>
+            </TouchableOpacity>
+
+            <ProfileHeader username={username}/>
+            <ProfilePostGrid username={username}/>
         </View>
     )
 }
