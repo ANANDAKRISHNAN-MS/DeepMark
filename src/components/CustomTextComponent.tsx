@@ -1,6 +1,6 @@
 import { Text, TextInput, View} from 'react-native';
 
-export default function CustomTextComponent({ label, ...textInputProps }) {
+export default function CustomTextComponent({ label, ...textInputProps }: any) {
     return(
         <View>
             <Text className="mb-2 text-gray-500 font-semibold">{label}</Text>

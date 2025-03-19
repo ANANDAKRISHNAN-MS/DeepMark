@@ -5,6 +5,7 @@ import { TouchableOpacity } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';//error occurin line while importing
 import { FadeInDown } from 'react-native-reanimated';
 import { useRouter } from "expo-router";
+
 import { useAuth } from '~/src/providers/AuthProvider';
 
 export default function Login() {

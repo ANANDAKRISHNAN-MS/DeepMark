@@ -2,13 +2,13 @@ import { AdvancedImage, AdvancedVideo } from "cloudinary-react-native";
 import { thumbnail, scale } from "@cloudinary/url-gen/actions/resize";
 import { useWindowDimensions } from "react-native";
 
-import { cld } from "~/src/lib/cloudinary";
+import getCloudinaryLink, { cld } from "~/src/lib/cloudinary";
 
-export default function PostContent({ post }){
+export default function PostContent({ post }: any){
     const { width } = useWindowDimensions();
-    
+    const post_link = getCloudinaryLink(post.username, post.media_url)
     if(post.media_type === 'image'){
-        const image = cld.image(post.media_url);
+        const image = cld.image(post_link);
         image.resize(thumbnail().width(width).height(width));
 
         return(
@@ -16,7 +16,7 @@ export default function PostContent({ post }){
         )
     }
     if(post.media_type === 'video'){
-        const video = cld.video(post.media_url);
+        const video = cld.video(post_link);
         video.resize(scale().width(400));
         return(
              <AdvancedVideo 

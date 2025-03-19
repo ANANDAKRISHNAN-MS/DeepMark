@@ -7,11 +7,11 @@ import { thumbnail } from "@cloudinary/url-gen/actions/resize";
 import { focusOn } from "@cloudinary/url-gen/qualifiers/gravity";
 import { FocusOn } from "@cloudinary/url-gen/qualifiers/focusOn";
 
-import { cld } from "~/src/lib/cloudinary";
+import getCloudinaryLink, { cld } from "~/src/lib/cloudinary";
 import PostContent from "~/src/components/PostContent";
 
 
-export default function PostListItem({ post } ) {
+export default function PostListItem({ post }: any) {
     const [isLiked, setIsLiked] = useState(false);
     const [likedRecord, setLikedRecord] = useState(null);
 
@@ -36,8 +36,7 @@ export default function PostListItem({ post } ) {
     const deleteLike = async () => {
         /*TODO unlike api */
     }
-
-    const avatar = cld.image(post.user_profile_picture)
+    const avatar = cld.image(getCloudinaryLink(post.username, post.user_profile_picture))
     avatar.resize(thumbnail().width(48).height(48).gravity(focusOn(FocusOn.face())));
 
     return(
@@ -45,7 +44,7 @@ export default function PostListItem({ post } ) {
             {/* Header*/}
             <View className="p-3 flex-row items-center gap-2">
                 <AdvancedImage
-                  cldImg={post.user_profile_picture}
+                  cldImg={avatar}
                   className="w-12 aspect-square rounded-full" 
                 />
                 <Text className="font-semibold">{post.username}</Text>
@@ -63,8 +62,8 @@ export default function PostListItem({ post } ) {
             </View>
             <View className="px-3 g-2">
                 <Text className="font-semibold"> {post.likes_count} likes</Text>
-                <Text>
-                    <Text className="font-semibold">{post.username}</Text>
+                <Text >
+                    <Text className="pr-5 font-semibold">{post.username}</Text>
                     {post.caption}
                 </Text>
 
