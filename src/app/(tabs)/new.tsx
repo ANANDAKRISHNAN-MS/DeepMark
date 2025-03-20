@@ -1,14 +1,20 @@
-import { Text, View, Image, TextInput, Pressable } from "react-native"
+import { Text, View, Image, TextInput, Pressable, Alert } from "react-native"
 import { useEffect, useState } from "react"
 import * as ImagePicker from 'expo-image-picker';
 import { useVideoPlayer, VideoView } from "expo-video";
 
 import Button from "~/src/components/Button";
+import { useAuth } from "~/src/providers/AuthProvider";
+import { useRouter } from "expo-router";
 
 export default function  CreatePost() {
     const[caption, setCaption] = useState('');
     const [media, setMedia] = useState<string | null>(null);
     const [mediaType, setMediaType] = useState<'image' | 'video' | null>(null);
+
+    const {token, logout} = useAuth();
+
+    const router = useRouter()
 
     useEffect(()=>{
         if(!media){
@@ -41,9 +47,55 @@ export default function  CreatePost() {
     };
 
     const uploadPost = async () => {
-         /* TODO upload user post*/
+        if (!media || !mediaType) return;
+    
+        const formData = new FormData();
+        const fileName = media.split('/').pop();
+        const fileType = mediaType === 'image' ? 'image/jpeg' : 'video/mp4';
+    
+        formData.append('media', {
+            uri: media,
+            name: fileName,
+            type: fileType,
+        } as any); 
+    
+        formData.append('caption', caption);
+        formData.append('media_type', mediaType);
+        
+        try {
+            const res = await fetch(`${process.env.EXPO_PUBLIC_BASE_URL}/posts/`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "multipart/form-data",
+                },
+                body: formData
+            });
+    
+            const data = await res.json();
+    
+            if (res.ok) {
 
-    }
+                Alert.alert("Post Uploaded")
+                router.replace("/(tabs)")
+
+            } else {
+                if(res.status === 409 || res.status === 406){
+                    Alert.alert(
+                        "Upload Failed",
+                        `${data.detail}`,
+                    );
+                }else{
+                    Alert.alert("Time Out","Login Again");
+                    await logout()
+                    router.replace('/login')
+                }
+            }
+        } catch (error) {
+            console.error("Upload error:", error);
+        }
+    };
+    
 
     return(
         <View className="p-3 items-center flex-1">
@@ -74,7 +126,8 @@ export default function  CreatePost() {
                 value={caption}
                 onChangeText={(newValue) => setCaption(newValue)} 
                 placeholder="What's on your mind" 
-                className="w-full p-3" 
+                className="w-full p-3"
+                autoCapitalize="none"
             />
 
             {/* Button */}

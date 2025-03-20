@@ -36,7 +36,7 @@ export default function FeedScreen() {
        if (!response.ok) {
           Alert.alert("Time Out","Login Again");
           await logout()
-          router.push('/login')
+          router.replace('/login')
        }
        setProfilePicture(data.profile_picture)
      } catch (error) {
@@ -58,7 +58,7 @@ export default function FeedScreen() {
           if (!response.ok) {
             Alert.alert("Time Out","Login Again");
             await logout()
-            router.push('/login')
+            router.replace('/login')
           }
           setPosts(data)
         } catch (error) {

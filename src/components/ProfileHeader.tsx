@@ -16,7 +16,7 @@ import getCloudinaryLink, { cld } from '~/src/lib/cloudinary';
 export default function ProfileHeader({username}: any) {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalTitle, setModalTitle] = useState<any>('');
-  const [user, setUser] = useState([]);
+  const [user, setUser] = useState<any>([]);
   const {token, logout} = useAuth();
 
   useEffect(()=>{
@@ -38,7 +38,7 @@ export default function ProfileHeader({username}: any) {
       if (!response.ok) {
          Alert.alert("Time Out","Login Again");
          await logout()
-         router.push('/login')
+         router.replace('/login')
       }
     } catch (error) {
       console.error("Error fetching profile:", error);
@@ -63,13 +63,13 @@ export default function ProfileHeader({username}: any) {
           className="w-24 h-24 rounded-full"
         />
         <View className="flex-row ml-5 space-x-4">
-          <TouchableOpacity onPress={() => openModal('Followers')}>
+          <TouchableOpacity onPress={() => openModal('following')}>
             <View className="items-center pl-5">
               <Text className="text-lg font-bold">{user.following_count}</Text>
               <Text className="text-sm text-gray-500">Followers</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => openModal('Following')}>
+          <TouchableOpacity onPress={() => openModal('followers')}>
             <View className="items-center pl-5">
               <Text className="text-lg font-bold">{user.followers_count}</Text>
               <Text className="text-sm text-gray-500">Following</Text>

@@ -1,36 +1,54 @@
 import { View, Text, Image } from "react-native";
 
-export default function ActivityListItem({ item }: any){
+import { AdvancedImage } from 'cloudinary-react-native';
+import { thumbnail, scale } from "@cloudinary/url-gen/actions/resize";
+import { focusOn } from "@cloudinary/url-gen/qualifiers/gravity";
+import { FocusOn } from "@cloudinary/url-gen/qualifiers/focusOn";
+import { format } from "@cloudinary/url-gen/actions/delivery";
 
-    const getImageSource = (image: any) => {
-        return typeof image === 'string' ? { uri: image } : image;
-      };
-      
-    const postImage =
-      item.likedPostThumbnail ||
-      item.deepfakeDetectionThumbnail ||
-      item.postThumbnail;
+import getCloudinaryLink, { cld } from "~/src/lib/cloudinary";
 
-    return (
-      <View className="flex-row items-center px-4 py-3 border-b border-gray-300 bg-white">
-        {item.userProfile && (
-          <Image
-            source={{ uri: item.userProfile }}
-            className="w-12 h-12 rounded-full mr-3"
-          />
-        )}
-        <View className="flex-1 flex-row items-center">
-          <Text className="text-base">
-            {item.user && <Text className="font-bold">{item.user} </Text>}
-            {item.action}
-          </Text>
-        </View>
-        {postImage && (
-          <Image
-            source={getImageSource(postImage)}
-            className="w-12 h-12 ml-3"
-          />
-        )}
+export default function ActivityListItem({ item }: any) {
+  let activityText = "";
+  let postThumbnail = "";
+  let userAvatar = ""
+
+  if (item.liked_post_id) {
+    activityText = `${item.sender_name} liked your post.`;
+    userAvatar = getCloudinaryLink(item.sender_name,item.liked_user_profile_picture);
+    postThumbnail = getCloudinaryLink(item.receiver_name,item.liked_post_url);
+  } else if (item.detected_post_id) {
+    activityText = `${item.sender_name} tried to repost your post.`;
+    userAvatar = getCloudinaryLink(item.sender_name,item.detected_user_profile_picture);
+    postThumbnail = getCloudinaryLink(item.receiver_name,item.detected_post_url);
+  } else if (item.receiver_name) {
+    activityText = `${item.sender_name} started following You.`;
+    userAvatar = getCloudinaryLink(item.sender_name,item.followed_profile_picture);
+    postThumbnail = "";
+  }
+
+  const avatar = cld.image(userAvatar)
+  avatar.resize(thumbnail().width(48).height(48).gravity(focusOn(FocusOn.face())));
+
+  const post = cld.video(postThumbnail)
+  const thumbnailImage = post.delivery(format("jpg")).resize(thumbnail().width(400).height(300));
+  return (
+    <View className="flex-row items-center px-4 py-3 border-b border-gray-300 bg-white">
+      <AdvancedImage
+        cldImg={avatar}
+        className="w-12 aspect-square rounded-full" 
+      />
+
+      <View className="flex-1">
+        <Text className=" ml-2 text-base text-gray-800">{activityText}</Text>
       </View>
-    );
+
+      {postThumbnail ? (
+        <AdvancedImage
+          cldImg={thumbnailImage}
+          className="w-12 h-12 ml-3 " 
+        />
+      ) : null}
+    </View>
+  );
 }
