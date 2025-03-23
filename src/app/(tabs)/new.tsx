@@ -11,13 +11,15 @@ export default function  CreatePost() {
     const[caption, setCaption] = useState('');
     const [media, setMedia] = useState<string | null>(null);
     const [mediaType, setMediaType] = useState<'image' | 'video' | null>(null);
+    const [hasTriedPicking, setHasTriedPicking] = useState(false);
+    const [uploading, setUploading] = useState(false);
 
     const {token, logout} = useAuth();
 
     const router = useRouter()
 
     useEffect(()=>{
-        if(!media){
+        if (!media && !hasTriedPicking) {
             pickMedia();
         }
     },[media]);
@@ -28,7 +30,8 @@ export default function  CreatePost() {
       });
 
     const pickMedia = async () => {
-        // No permissions request is necessary for launching the image library
+        
+        setHasTriedPicking(true);
         let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ['images', 'videos'],
         allowsEditing: true,
@@ -47,10 +50,11 @@ export default function  CreatePost() {
     };
 
     const uploadPost = async () => {
-        if (!media || !mediaType) return;
-    
+        if (!media || !mediaType || uploading) return;
+        setUploading(true);
+
         const formData = new FormData();
-        const fileName = media.split('/').pop();
+        const fileName = media.split('/').pop() || `media.${mediaType === 'image' ? 'jpg' : 'mp4'}`;
         const fileType = mediaType === 'image' ? 'image/jpeg' : 'video/mp4';
     
         formData.append('media', {
@@ -91,6 +95,7 @@ export default function  CreatePost() {
                     router.replace('/login')
                 }
             }
+            setUploading(false);
         } catch (error) {
             console.error("Upload error:", error);
         }
@@ -132,7 +137,12 @@ export default function  CreatePost() {
 
             {/* Button */}
             <View className="mt-auto w-full">
-                <Button onPress={uploadPost} title="Share" />
+            <Button 
+            onPress={uploadPost} 
+            title="Share" 
+            disabled={uploading} 
+            loading={uploading}
+            />
             </View>
         </View>
     )

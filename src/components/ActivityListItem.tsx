@@ -11,7 +11,8 @@ import getCloudinaryLink, { cld } from "~/src/lib/cloudinary";
 export default function ActivityListItem({ item }: any) {
   let activityText = "";
   let postThumbnail = "";
-  let userAvatar = ""
+  let userAvatar = "";
+  let thumbnailImage;
 
   if (item.liked_post_id) {
     activityText = `${item.sender_name} liked your post.`;
@@ -30,8 +31,15 @@ export default function ActivityListItem({ item }: any) {
   const avatar = cld.image(userAvatar)
   avatar.resize(thumbnail().width(48).height(48).gravity(focusOn(FocusOn.face())));
 
-  const post = cld.video(postThumbnail)
-  const thumbnailImage = post.delivery(format("jpg")).resize(thumbnail().width(400).height(300));
+  if(item.media_type === 'video'){
+    const post = cld.video(postThumbnail)
+    thumbnailImage = post.delivery(format("jpg")).resize(thumbnail().width(400).height(300));
+  }
+  else{
+    const post = cld.image(postThumbnail)
+    thumbnailImage = post.resize(thumbnail().width(400).height(300));
+  }
+
   return (
     <View className="flex-row items-center px-4 py-3 border-b border-gray-300 bg-white">
       <AdvancedImage
